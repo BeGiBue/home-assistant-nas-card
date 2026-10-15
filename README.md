@@ -7,12 +7,12 @@
 ## Screenshot
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/BeGiBue/nas-card/main/images/Screenshot.png" alt="NAS Card Screenshot" width="1000">
+  <img src="https://raw.githubusercontent.com/BeGiBue/home-assistant-nas-card/main/images/Screenshot.png" alt="NAS Card Screenshot" width="1000">
 </p>
 
 <p align="center">
   <strong>Version 1.1.4</strong><br>
-  <a href="https://github.com/BeGiBue/nas-card/actions/workflows/validate.yml"><img src="https://github.com/BeGiBue/nas-card/actions/workflows/validate.yml/badge.svg" alt="HACS validation"></a>
+  <a href="https://github.com/BeGiBue/home-assistant-nas-card/actions/workflows/validate.yml"><img src="https://github.com/BeGiBue/home-assistant-nas-card/actions/workflows/validate.yml/badge.svg" alt="HACS validation"></a>
 </p>
 
 ## Funktionen
@@ -71,12 +71,12 @@ Alle Entitäten können im grafischen Karteneditor geändert werden. Dadurch ist
 
 ### Automatisch
 
-[![Open your Home Assistant instance and open this repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=BeGiBue&repository=nas-card&category=plugin)
+[![Open your Home Assistant instance and open this repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=BeGiBue&repository=home-assistant-nas-card&category=plugin)
 
 ### Manuell
 
 1. In HACS **Benutzerdefinierte Repositories** öffnen.
-2. `https://github.com/BeGiBue/nas-card` hinzufügen.
+2. `https://github.com/BeGiBue/home-assistant-nas-card` hinzufügen.
 3. Als Typ **Dashboard** auswählen.
 4. **NAS Card** installieren.
 5. Home Assistant bzw. den Browser vollständig neu laden.
@@ -197,7 +197,7 @@ Die Ausgabe läuft über Home Assistants eigene `formatEntityState()`-Formatieru
 
 ## Release
 
-Alle Versionen stehen unter [GitHub Releases](https://github.com/BeGiBue/nas-card/releases), die Änderungen im Detail in [`CHANGELOG.md`](CHANGELOG.md). Zu jeder Version gibt es eine Datei `RELEASE_NOTES_<Version>.md`.
+Alle Versionen stehen unter [GitHub Releases](https://github.com/BeGiBue/home-assistant-nas-card/releases), die Änderungen im Detail in [`CHANGELOG.md`](CHANGELOG.md). Zu jeder Version gibt es eine Datei `RELEASE_NOTES_<Version>.md`.
 
 ## Hinweise zu Marken
 
