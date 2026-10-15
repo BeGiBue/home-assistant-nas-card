@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/BeGiBue/home-assistant-nas-card/main/images/nas-card-logo-160.png" alt="NAS Card" width="160">
+</p>
+
 <h1 align="center">NAS Card</h1>
 
 <p align="center">
