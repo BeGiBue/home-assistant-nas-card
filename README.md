@@ -12,22 +12,22 @@
 
 **Normalbetrieb – schmal (350 px)**
 
-<img src="screenshots/nas-card-normal-350-light.png" width="350" alt="NAS Card im Normalbetrieb, 350 px Kartenbreite, helles Theme">
+<img src="https://raw.githubusercontent.com/BeGiBue/home-assistant-nas-card/main/screenshots/nas-card-normal-350-light.png" width="350" alt="NAS Card im Normalbetrieb, 350 px Kartenbreite, helles Theme">
 
 **Normalbetrieb – breit (800 px)**
 
-<img src="screenshots/nas-card-normal-800-light.png" width="800" alt="NAS Card im Normalbetrieb, 800 px Kartenbreite, helles Theme">
+<img src="https://raw.githubusercontent.com/BeGiBue/home-assistant-nas-card/main/screenshots/nas-card-normal-800-light.png" width="800" alt="NAS Card im Normalbetrieb, 800 px Kartenbreite, helles Theme">
 
 **Fehler – schmal (350 px)**
 
-<img src="screenshots/nas-card-error-350-light.png" width="350" alt="NAS Card mit degradiertem Volume und fehlerhaftem Laufwerk 2, 350 px Kartenbreite, helles Theme">
+<img src="https://raw.githubusercontent.com/BeGiBue/home-assistant-nas-card/main/screenshots/nas-card-error-350-light.png" width="350" alt="NAS Card mit degradiertem Volume und fehlerhaftem Laufwerk 2, 350 px Kartenbreite, helles Theme">
 
 **Fehler – breit (800 px)**
 
-<img src="screenshots/nas-card-error-800-light.png" width="800" alt="NAS Card mit degradiertem Volume und fehlerhaftem Laufwerk 2, 800 px Kartenbreite, helles Theme">
+<img src="https://raw.githubusercontent.com/BeGiBue/home-assistant-nas-card/main/screenshots/nas-card-error-800-light.png" width="800" alt="NAS Card mit degradiertem Volume und fehlerhaftem Laufwerk 2, 800 px Kartenbreite, helles Theme">
 
 <p align="center">
-  <strong>Version 1.1.4</strong><br>
+  <strong>Version 1.1.5</strong><br>
   <a href="https://github.com/BeGiBue/home-assistant-nas-card/actions/workflows/validate.yml"><img src="https://github.com/BeGiBue/home-assistant-nas-card/actions/workflows/validate.yml/badge.svg" alt="HACS validation"></a>
 </p>
 
