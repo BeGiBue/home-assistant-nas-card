@@ -299,5 +299,5 @@ class NasCard extends HTMLElement{
 Object.freeze(NasCard.prototype);
 if(!customElements.get("nas-card"))customElements.define("nas-card",NasCard);
 window.customCards=window.customCards||[];
-if(!window.customCards.some(c=>c.type==="nas-card"))window.customCards.push({type:"nas-card",name:"NAS Card",description:"NAS-Card im Glas-Look, optimiert für iPhone, iPad und Hochformat-Kiosk.",preview:true,documentationURL:"https://github.com/BeGiBue/nas-card"});
+if(!window.customCards.some(c=>c.type==="nas-card"))window.customCards.push({type:"nas-card",name:"NAS Card",description:"NAS-Card im Glas-Look, optimiert für iPhone, iPad und Hochformat-Kiosk.",preview:true,documentationURL:"https://github.com/BeGiBue/home-assistant-nas-card"});
 console.info(`NAS Card v${NAS_CARD_VERSION}`);
