@@ -27,7 +27,7 @@
 <img src="https://raw.githubusercontent.com/BeGiBue/home-assistant-nas-card/main/screenshots/nas-card-error-800-light.png" width="800" alt="NAS Card mit degradiertem Volume und fehlerhaftem Laufwerk 2, 800 px Kartenbreite, helles Theme">
 
 <p align="center">
-  <strong>Version 1.1.5</strong><br>
+  <strong>Version 2.0.0</strong><br>
   <a href="https://github.com/BeGiBue/home-assistant-nas-card/actions/workflows/validate.yml"><img src="https://github.com/BeGiBue/home-assistant-nas-card/actions/workflows/validate.yml/badge.svg" alt="HACS validation"></a>
 </p>
 
@@ -35,15 +35,12 @@
 
 - Theme-sensitive Darstellung für Light Mode, Dark Mode und benutzerdefinierte Home-Assistant-Themes
 - Editierbarer Haupttitel und Untertitel über native Home-Assistant-Textfelder
-- Festes `mdi:nas` Symbol vor dem Haupttitel
 - Alle Entitäten über native Home-Assistant-Entity-Picker auswählbar
 - Freigestelltes DS720+-Standardbild direkt in der JavaScript-Komponente eingebettet – standardmäßig groß im Hintergrund, alternativ neben dem Titel; optional eigene Bild-URL verwendbar
 - Temperatur, CPU, RAM/Speicher und Sicherheitsstatus
 - Inbound- und Outbound-Durchsatz in zwei großen Statusfeldern
 - Volume-Auslastung als Ringdiagramm mit Belegt/Frei/Gesamt
-- Zwei Laufwerksbereiche mit Temperatur, Restlebensdauer, Sektoren und Status – Werte rechtsbündig wie in der Volume-Box
-- Bezeichnungen in den Messfeldern oberhalb der Zustände
-- Messwerte linksbündig mit Icon-Chip, großer Zahl und kleiner Einheit
+- Zwei Laufwerksbereiche mit Temperatur, Restlebensdauer, Sektoren und Status
 - Warnfarben für CPU, RAM und Volume (orange ab 75/80/80 %, rot ab 90 %)
 - DSM-Update-Zeile mit installierter und ggf. neuer Version
 - Neustart, letzter Start und Herunterfahren unten; im breiten Layout in einer Reihe
@@ -85,19 +82,23 @@ Alle Entitäten können im grafischen Karteneditor geändert werden. Dadurch ist
 
 ## Installation über HACS
 
-### Automatisch
+Das Projekt ist im offiziellen HACS-Katalog verfügbar.
 
-[![Open your Home Assistant instance and open this repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=BeGiBue&repository=home-assistant-nas-card&category=plugin)
+1. HACS öffnen und nach **NAS Card** suchen.
+2. Die Karte auswählen und herunterladen.
+3. Browser vollständig neu laden; in der Companion-App gegebenenfalls den Frontend-Cache zurücksetzen.
 
-### Manuell
+[![In HACS öffnen](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=BeGiBue&repository=home-assistant-nas-card&category=plugin)
 
-1. In HACS **Benutzerdefinierte Repositories** öffnen.
-2. `https://github.com/BeGiBue/home-assistant-nas-card` hinzufügen.
-3. Als Typ **Dashboard** auswählen.
-4. **NAS Card** installieren.
-5. Home Assistant bzw. den Browser vollständig neu laden.
+### Bestehende Custom-Repository-Installation migrieren
 
-Das Repository enthält die offizielle HACS-Validierung unter `.github/workflows/validate.yml`. Sie läuft bei Änderungen auf `main`, bei Pull Requests und kann zusätzlich manuell gestartet werden. In `hacs.json` ist `nas-card.js` explizit als Plugin-Datei angegeben.
+1. Zuerst prüfen, ob **NAS Card** im offiziellen HACS-Katalog gefunden wird. Falls nicht, HACS aktualisieren und den bisherigen Eintrag vorerst behalten.
+2. Unter **HACS → ⋮ → Benutzerdefinierte Repositories** nur den Eintrag für dieses Repository entfernen.
+3. **Die bestehende Installation nicht deinstallieren.** Installation, Dashboard-Ressource und Kartenkonfigurationen beibehalten.
+4. HACS neu laden bzw. **Informationen aktualisieren**, anschließend die weiterhin installierte Karte und angebotene Updates prüfen.
+5. Nach einem Update das Frontend vollständig neu laden und die vorhandenen Dashboard-Karten prüfen.
+
+Für den Wechsel in den Katalog müssen Karten und YAML-Konfigurationen nicht neu angelegt werden. Die Major-Version kennzeichnet diesen Meilenstein und bedeutet nicht automatisch Breaking Changes; vorhandene Konfigurationsschlüssel bleiben erhalten.
 
 ## Card hinzufügen
 
@@ -198,7 +199,7 @@ Mit `show_image: false` kann das Gerätebild vollständig ausgeblendet werden.
 
 Im Home-Assistant-Sections-Dashboard ist die Breite frei einstellbar. Die Card startet mit 12 Spalten und erlaubt 4 bis 12 Spalten.
 
-Die Höhe wird bewusst nicht als Grid-Größe vorgegeben. Home Assistant lässt die Card damit die benötigte Höhe selbst bestimmen. Die Card meldet ihre Mindesthöhe (`min_rows`); im Layout-Editor lässt sich die Höhe daher nicht kleiner einstellen, als der Inhalt braucht. Das Layout orientiert sich von den Abständen und Proportionen an der Eaton UPS Card. Bei schmalen Breiten passt sich die interne Anordnung automatisch an.
+Die Höhe wird bewusst nicht als Grid-Größe vorgegeben. Home Assistant lässt die Card damit die benötigte Höhe selbst bestimmen. Die Card meldet ihre Mindesthöhe (`min_rows`); im Layout-Editor lässt sich die Höhe daher nicht kleiner einstellen, als der Inhalt braucht. Bei schmalen Breiten passt sich die interne Anordnung automatisch an.
 
 ## Letzter Start
 
@@ -214,6 +215,14 @@ Die Ausgabe läuft über Home Assistants eigene `formatEntityState()`-Formatieru
 ## Release
 
 Alle Versionen stehen unter [GitHub Releases](https://github.com/BeGiBue/home-assistant-nas-card/releases), die Änderungen im Detail in [`CHANGELOG.md`](CHANGELOG.md). Zu jeder Version gibt es eine Datei `RELEASE_NOTES_<Version>.md`.
+
+## Voraussetzungen und Grenzen
+
+Benötigt werden Home Assistant mit Custom-Card-Unterstützung und die in der Konfiguration zugeordneten Entitäten. Die Karte richtet die Geräteintegration nicht selbst ein. Nicht verfügbare Messwerte werden als solche angezeigt; Gerätestatus und Aktualität hängen von der zugrunde liegenden Integration ab.
+
+Aktionen laufen über die angemeldete Home-Assistant-Sitzung und deren Berechtigungen. Die Bestätigung per zweitem Tippen verhindert versehentliche Bedienung; sie ersetzt keine Berechtigungsprüfung. Eigene Bild-URLs werden vom Browser geladen und können dessen IP-Adresse und Metadaten an den Bildanbieter übertragen. Für lokale Bilder `/local/…` verwenden und keine Zugangsdaten in URLs eintragen.
+
+Die Berechnung von freiem und gesamtem Speicher setzt zusammengehörige Belegungswerte in Prozent und Speichereinheiten voraus. Die Karte zeigt zwei Laufwerke; sie ersetzt keine NAS-Überwachung.
 
 ## Hinweise zu Marken
 
