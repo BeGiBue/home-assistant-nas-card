@@ -27,7 +27,7 @@
 <img src="https://raw.githubusercontent.com/BeGiBue/home-assistant-nas-card/main/screenshots/nas-card-error-800-light.png" width="800" alt="NAS Card mit degradiertem Volume und fehlerhaftem Laufwerk 2, 800 px Kartenbreite, helles Theme">
 
 <p align="center">
-  <strong>Version 2.0.0</strong><br>
+  <strong>Version 2.0.1</strong><br>
   <a href="https://github.com/BeGiBue/home-assistant-nas-card/actions/workflows/validate.yml"><img src="https://github.com/BeGiBue/home-assistant-nas-card/actions/workflows/validate.yml/badge.svg" alt="HACS validation"></a>
 </p>
 
@@ -45,9 +45,7 @@
 - DSM-Update-Zeile mit installierter und ggf. neuer Version
 - Neustart, letzter Start und Herunterfahren unten; im breiten Layout in einer Reihe
 - Neustart und Herunterfahren verlangen ein zweites Tippen zur Bestätigung
-- "Letzter Start" besteht aus genau zwei Textzeilen und nutzt Home Assistants automatische Zustands-/Zeitformatierung
-- Breite im Sections-Dashboard frei von 4 bis 12 Spalten einstellbar
-- Höhe wird automatisch durch die Card bestimmt; im Layout-Editor nicht unter die benötigte Mindesthöhe einstellbar
+- Breite im Sections-Dashboard frei von 4 bis 12 Spalten einstellbar, Höhe automatisch
 - Optimiert für Hochformat und Touch – iPhone, iPad und Raspberry-Pi-Kiosk: Schrift wächst mit der Kartenbreite, breites Layout ab 480 px
 
 ## Standard-Entitäten
@@ -92,8 +90,8 @@ Das Projekt ist im offiziellen HACS-Katalog verfügbar.
 
 ### Bestehende Custom-Repository-Installation migrieren
 
-1. Zuerst prüfen, ob **NAS Card** im offiziellen HACS-Katalog gefunden wird. Falls nicht, HACS aktualisieren und den bisherigen Eintrag vorerst behalten.
-2. Unter **HACS → ⋮ → Benutzerdefinierte Repositories** nur den Eintrag für dieses Repository entfernen.
+1. Prüfen, dass **NAS Card** im offiziellen HACS-Katalog verfügbar ist.
+2. Danach unter **HACS → ⋮ → Benutzerdefinierte Repositories** nur den Eintrag für dieses Repository entfernen.
 3. **Die bestehende Installation nicht deinstallieren.** Installation, Dashboard-Ressource und Kartenkonfigurationen beibehalten.
 4. HACS neu laden bzw. **Informationen aktualisieren**, anschließend die weiterhin installierte Karte und angebotene Updates prüfen.
 5. Nach einem Update das Frontend vollständig neu laden und die vorhandenen Dashboard-Karten prüfen.
@@ -185,7 +183,7 @@ Die Card berechnet daraus automatisch den Gesamt- und den freien Speicherplatz. 
 
 ## Bild
 
-Das freigestellte DS720+-Standardbild ist direkt in der JavaScript-Komponente eingebettet. Es existiert nicht als separates Repository-Asset und wird für die Card nicht aus dem `images`-Ordner geladen.
+Das DS720+-Standardbild ist direkt in `nas-card.js` eingebettet und wird nicht aus dem `images`-Ordner geladen.
 
 Für ein anderes NAS kann im grafischen Editor eine eigene Bild-URL eingetragen werden, z. B.:
 
@@ -211,10 +209,6 @@ Letzter Start
 ```
 
 Die Ausgabe läuft über Home Assistants eigene `formatEntityState()`-Formatierung. Damit werden Sprache, Datums-/Zeitdarstellung und Home-Assistant-Locale automatisch berücksichtigt.
-
-## Release
-
-Alle Versionen stehen unter [GitHub Releases](https://github.com/BeGiBue/home-assistant-nas-card/releases), die Änderungen im Detail in [`CHANGELOG.md`](CHANGELOG.md). Zu jeder Version gibt es eine Datei `RELEASE_NOTES_<Version>.md`.
 
 ## Voraussetzungen und Grenzen
 
