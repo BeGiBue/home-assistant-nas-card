@@ -3,7 +3,7 @@
 ## 2.0.1 - 2026-10-28
 
 - Aufräumarbeiten ohne Funktionsänderung: mehrfach vorhandene Regeln (Kartengröße, „Wert nicht verfügbar“, Warnfarben-Stufen) an je einer Stelle zusammengeführt, einen ungenutzten Merker, eine nie zutreffende Prüfung und veraltete Kommentare entfernt. Aussehen, Konfiguration und Verhalten bleiben unverändert.
-- Repository verschlankt: nicht benötigte Logo-Dateien, interne Release-Checkliste und die Pflicht-Dateien `RELEASE_NOTES_<Version>.md` entfernt (der Release-Text kommt jetzt aus diesem Changelog), doppelte Aussagen und den Release-Abschnitt aus der README genommen, Security-Review gekürzt.
+- Repository verschlankt: nicht benötigte Logo-Dateien, interne Release-Checkliste und die Pflicht-Dateien `RELEASE_NOTES_<Version>.md` entfernt (der Release-Text kommt jetzt aus diesem Changelog), doppelte Aussagen und den Release-Abschnitt aus der README genommen.
 
 ## 2.0.0 - 2026-10-24
 
