@@ -293,6 +293,42 @@ async () => {
   }
   await frames();
   check('Keine Fehlermeldungen des Browsers, auch kein „ResizeObserver loop" (' + window.__errors.slice(0, 2).join(' | ') + ')', window.__errors.length === 0);
+  // --- Befunde des unabhängigen Tests ---
+  {
+    const f = fixture({config: {reboot_entity: 'button.same', shutdown_entity: 'button.same'}, states: {...baseStates(), 'button.same': st('unknown')}});
+    const acts = () => qa(f.card, '[data-press="button.same"]');
+    acts()[0].click();
+    check('gleiche Entität an zwei Schaltflächen: nur die getippte fragt nach', acts().length === 2 && acts()[0].classList.contains('arm') && !acts()[1].classList.contains('arm'));
+    f.card.setConfig({...f.card._config, confirm_actions: false});
+    check('Bestätigung abgeschaltet: offene Nachfrage verschwindet', qa(f.card, '.act.arm').length === 0);
+  }
+  {
+    const f = fixture({config: {confirm_actions: false}}), c = f.cfg, pending = [];
+    f.card.hass = {...f.card._hass, callService: () => new Promise((r) => pending.push(r))};
+    const b = () => q(f.card, `[data-press="${c.reboot_entity}"]`);
+    b().click(); b().click();
+    await turn();
+    check('laufender Aufruf: Schaltfläche zeigt es und sendet nur einmal', b().classList.contains('busy') && pending.length === 1);
+    pending.forEach((r) => r());
+    await turn();
+    check('Aufruf fertig: „Gesendet“', b().classList.contains('sent') && !b().classList.contains('busy'));
+  }
+  {
+    const s = baseStates(), f = fixture({states: s}), c = f.cfg;
+    s[c.update_entity] = st('off', '', {installed_version: '7.2.3-99999', latest_version: '7.2.2-72806'});
+    f.set(s);
+    check('nur die installierte Version ändert sich: Anzeige folgt', /7\.2\.3-99999/.test(text(q(f.card, 'ha-card'))));
+  }
+  {
+    const f = fixture({width: 600});
+    await frames();
+    check('lange Titel der Aktionen ragen nicht aus der Schaltfläche', qa(f.card, '.at b').every((e) => e.scrollWidth <= e.clientWidth + 1));
+    const ring = () => q(f.card, '.donut').getBoundingClientRect().width;
+    const g = fixture({width: 350}); await frames(); const r1 = ring.call(null);
+    const sizes = new Set();
+    for (const w of [345, 350, 355, 360]) { document.getElementById('w').style.width = w + 'px'; await frames(); sizes.add(Math.round(q(g.card, '.donut').getBoundingClientRect().width)); }
+    check('Ring hat feste Größen und wächst nicht stufenlos mit der Breite', sizes.size === 1);
+  }
   return results;
 }
 """

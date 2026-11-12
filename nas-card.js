@@ -201,12 +201,20 @@ class NasCard extends HTMLElement{
       const up=(k,at)=>{L[k]=L[k]===undefined?w>=at:L[k]?w>=at-H:w>=at+H;};
       up("wide",480);up("w560",560);up("w620",620);
       L.slim=L.slim===undefined?w<=340:L.slim?w<=340+H:w<=340-H;
+      // Ring 7,5em (breites Layout: 8em), sobald 34 % der Volume-Fläche dafür reichen, sonst 6,5em – feste Stufen statt stufenlos, damit die Höhe nicht mit der Breite wächst
+      const sc=this._scale(),fs=[14,15,17,19,22][this._tier||0]*sc;
+      up("r75",Math.round(24.56*fs+32*sc));up("r80",Math.round(26.03*fs+32*sc));
     }
     const wide=l==="wide"||(l!=="compact"&&!!L.wide);
-    return{wide,w560:wide&&!!L.w560,w620:wide&&!!L.w620,slim:!!L.slim};
+    return{wide,w560:wide&&!!L.w560,w620:wide&&!!L.w620,slim:!!L.slim,r75:!!L.r75,r80:!!L.r80};
   }
   _layout(){const card=this.shadowRoot?.querySelector("ha-card");if(!card)return;const c=this._layoutClasses();for(const k in c)card.classList.toggle(k,c[k]);}
-  setConfig(c){this._config={...DEF,...c};this._sig="";this._update();}
+  setConfig(c){
+    this._config={...DEF,...c};this._sig="";
+    // Ohne Bestätigung gibt es keine offene Nachfrage mehr
+    if(this._config.confirm_actions===false)for(const[k,v]of[...this._acts])if(v.state==="arm"){clearTimeout(v.timer);this._acts.delete(k);}
+    this._update();
+  }
   set hass(h){this._hass=h;this._update();}
   get hass(){return this._hass;}
   getCardSize(){return 12;}
@@ -254,7 +262,7 @@ class NasCard extends HTMLElement{
   _update(){
     const c=this._config;
     const ids=Object.keys(c).filter(k=>k.endsWith("_entity")).map(k=>c[k]);
-    const sig=JSON.stringify(c)+ids.map(id=>{const s=this._s(id);return s?`${s.state}|${s.attributes?.unit_of_measurement||""}|${s.attributes?.latest_version||""}`:"-";}).join("§")+NASLang(this._hass);
+    const sig=JSON.stringify(c)+ids.map(id=>{const s=this._s(id);return s?`${s.state}|${s.attributes?.unit_of_measurement||""}|${s.attributes?.installed_version||""}|${s.attributes?.latest_version||""}`:"-";}).join("§")+NASLang(this._hass);
     if(sig===this._sig)return;
     this._sig=sig;this._render();
   }
@@ -278,9 +286,9 @@ class NasCard extends HTMLElement{
   // Zustand der Aktions-Schaltflächen (scharf geschaltet / gesendet) liegt in der Card und steht im Markup:
   // So übersteht er eintreffende Werte, statt beim nächsten Aufbau verloren zu gehen.
   _act(icon,id,title,sub,danger){
-    const T=NAST(this._hass),st=this._acts.get(id)?.state;
+    const T=NAST(this._hass),st=this._acts.get(icon+":"+id)?.state;
     const t=st==="arm"?T.tap_again:st==="sent"?T.sent:title,u=st==="arm"?T.to_confirm:st==="sent"?"":sub;
-    return`<button class="act${danger?" danger":""}${st==="arm"?" arm":""}${st==="sent"?" sent":""}" data-press="${this._e(id)}"><span class="chip"><ha-icon icon="${icon}"></ha-icon></span><span class="at"><b>${this._e(t)}</b><small>${this._e(u)}</small></span></button>`;
+    return`<button class="act${danger?" danger":""}${st==="arm"?" arm":""}${st==="sent"?" sent":""}${st==="busy"?" busy":""}" data-press="${this._e(id)}" data-act="${icon}"><span class="chip"><ha-icon icon="${icon}"></ha-icon></span><span class="at" lang="${NASLang(this._hass)}"><b>${this._e(t)}</b><small>${this._e(u)}</small></span></button>`;
   }
   _setAct(id,state,ms){
     clearTimeout(this._acts.get(id)?.timer);
@@ -291,18 +299,20 @@ class NasCard extends HTMLElement{
 
   async _press(btn){
     const id=btn.dataset.press;if(!id||!this._hass)return;
-    const st=this._acts.get(id)?.state;
+    // Zustand je Schaltfläche (auch wenn zwei dieselbe Entität nutzen)
+    const key=btn.dataset.act+":"+id,st=this._acts.get(key)?.state;
     // Während der Aufruf läuft oder "Gesendet" angezeigt wird, zählt ein weiteres Tippen nicht
     if(st==="busy"||st==="sent")return;
     // Erstes Tippen nur "scharf schalten", erst das zweite löst aus
-    if(this._config.confirm_actions!==false&&st!=="arm"){this._setAct(id,"arm",4000);return;}
-    this._setAct(id,"busy");
+    if(this._config.confirm_actions!==false&&st!=="arm"){this._setAct(key,"arm",4000);return;}
+    // Kommt keine Antwort, ist die Schaltfläche nach 10 s wieder frei
+    this._setAct(key,"busy",10000);
     const d=id.split(".")[0];
     try{
       if(d==="button")await this._hass.callService("button","press",{entity_id:id});
       else await this._hass.callService("homeassistant","toggle",{entity_id:id});
-      this._setAct(id,"sent",2500);
-    }catch(_){this._setAct(id,null);}
+      this._setAct(key,"sent",2500);
+    }catch(_){this._setAct(key,null);}
   }
 
   _render(){
@@ -415,9 +425,10 @@ class NasCard extends HTMLElement{
     .bar u{display:block;height:100%;border-radius:inherit;background:var(--t);text-decoration:none;transition:width .4s}
     .net{min-height:5em}
 
-    .volume{padding:1em;display:grid;grid-template-columns:auto minmax(0,1fr);gap:1em;align-items:center}
+    .volume{padding:1em;display:grid;grid-template-columns:minmax(6.5em,34%) minmax(0,1fr);gap:1em;align-items:center}
     /* feste Größe je Layout-Stufe: Die Card darf mit der Breite nicht stetig höher werden, sonst pendelt sie mit einer ein- und ausblendenden Scrollleiste */
-    .donut{position:relative;width:7em;aspect-ratio:1}
+    .donut{position:relative;width:6.5em;aspect-ratio:1}
+    .r75 .donut{width:7.5em}
     .ring{position:absolute;inset:0;border-radius:50%;background:conic-gradient(var(--t) var(--p),var(--line) 0);
       -webkit-mask:radial-gradient(circle,transparent 58%,#000 59%);mask:radial-gradient(circle,transparent 58%,#000 59%)}
     .donut>div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
@@ -445,17 +456,18 @@ class NasCard extends HTMLElement{
     .foot{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6em}
     .info,.act{min-width:0;min-height:3.6em;display:flex;align-items:center;gap:.7em;padding:.55em .8em;background:var(--fill);border:1px solid var(--line);border-radius:1em}
     .info{grid-column:1/-1}
-    .at{display:flex;flex-direction:column;gap:.15em;min-width:0}.at b{font-size:1em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.at small{color:var(--mut);font-size:.82em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .at{display:flex;flex-direction:column;gap:.15em;min-width:0}.at b{font-size:1em;overflow-wrap:anywhere;-webkit-hyphens:auto;hyphens:auto}.at small{color:var(--mut);font-size:.82em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .act.danger .chip,.act.arm .chip{--t:var(--err)}
     .act.arm{background:color-mix(in srgb,var(--err) 18%,transparent);border-color:var(--err)}
     .act.sent{border-color:var(--ok)}.act.sent .chip{--t:var(--ok)}
+    .act.busy{opacity:.6}
 
     /* Breites Layout (.wide ab 480 px oder per Option; dazu .w560, .w620 und .slim bis 340 px, alle von _layoutClasses() mit
        Hysterese gesetzt): Laufwerke nebeneinander, Aktionen in einer Reihe */
     /* Netzwerk im breiten Layout einzeilig: Symbol, Bezeichnung links, Wert rechts */
     .wide .net{min-height:3.6em;grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto}
     .wide .net .val{grid-column:auto;margin-top:0;justify-content:flex-end}
-    .wide .art img{max-height:5.2em}.wide .donut{width:8em}
+    .wide .art img{max-height:5.2em}.wide.r80 .donut{width:8em}
     .wide .drive{padding:.7em .9em}
     .wide .info,.wide .act{padding:.6em .7em}
     /* Aktionen in einer Reihe, sobald genug Breite da ist; schmaler: "Letzter Start" in eigener Zeile darüber */
